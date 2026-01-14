@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Birthday Surprise 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap');
+
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    min-height:100vh;
+    font-family:Poppins,sans-serif;
+    background:radial-gradient(circle at top,#1a1a2e,#000);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    color:#fff;
+}
+
+.card{
+    width:92%;
+    max-width:380px;
+    background:rgba(255,255,255,.06);
+    padding:28px;
+    border-radius:28px;
+    text-align:center;
+    backdrop-filter:blur(12px);
+    box-shadow:0 30px 80px rgba(255,182,193,.25);
+    animation:float 6s ease-in-out infinite;
+}
+
+@keyframes float{
+    50%{transform:translateY(-6px)}
+}
+
+.slide{animation:fade .6s ease}
+@keyframes fade{from{opacity:0;transform:translateY(16px)}to{opacity:1}}
+
+h1{
+    font-family:Pacifico;
+    color:#ffb3d9;
+    margin-bottom:6px;
+}
+
+p{font-size:14px;line-height:1.6;opacity:.95}
+
+.input{
+    width:100%;
+    padding:13px;
+    margin:7px 0;
+    border-radius:16px;
+    border:none;
+    background:rgba(255,255,255,.12);
+    color:#fff;
+    outline:none;
+}
+
+.input:focus{
+    box-shadow:0 0 0 2px rgba(255,179,217,.4);
+}
+
+button{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:40px;
+    margin-top:12px;
+    background:linear-gradient(135deg,#ff5e78,#ff85a2);
+    color:#fff;
+    cursor:pointer;
+    font-weight:600;
+    transition:.3s;
+}
+
+button:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,94,120,.4)}
+button:disabled{opacity:.5;cursor:not-allowed}
+
+.heart{
+    font-size:40px;
+    animation:beat 1.2s infinite;
+}
+@keyframes beat{
+    50%{transform:scale(1.25)}
+}
+
+/* SURPRISE */
+.choice-wrap{
+    margin-top:18px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.choice-button{
+    background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.25);
+}
+
+.choice-button.react{
+    animation:shake .35s;
+}
+@keyframes shake{
+    25%{transform:translateX(-4px)}
+    50%{transform:translateX(4px)}
+}
+
+#typing{
+    margin-top:18px;
+    min-height:44px;
+    font-style:italic;
+    color:#ffd6e8;
+}
+
+/* END */
+.end-heart{
+    font-size:48px;
+    margin-bottom:8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<!-- OPEN -->
+<div id="opening" class="slide">
+    <h1>Hai 💖</h1>
+    <p>Isi sedikit dulu ya</p>
+    <input id="nama" class="input" placeholder="Nama">
+    <input id="tgl" type="date" class="input">
+    <button id="btn" disabled>Mulai ✨</button>
+</div>
+
+<!-- CHOICE -->
+<div id="choice" class="slide" style="display:none">
+    <h1 id="judul"></h1>
+    <p id="info"></p>
+    <button id="btnGab">💌 Baca Pesan</button>
+    <button id="btnSurprise" disabled>🎁 Surprise</button>
+</div>
+
+<!-- MESSAGE -->
+<div id="gabungan" class="slide" style="display:none">
+    <p id="pGab"></p>
+    <button id="btnBack">Kembali</button>
+</div>
+
+<!-- SURPRISE -->
+<div id="surprise" class="slide" style="display:none">
+    <div class="heart">❤</div>
+    <p>Pilih dengan perasaanmu</p>
+
+    <div class="choice-wrap">
+        <button id="btnTrap" class="choice-button">Pilihan A</button>
+        <button id="btnReal" class="choice-button">Pilihan B</button>
+    </div>
+
+    <p id="typing"></p>
+</div>
+
+<!-- END -->
+<div id="ending" class="slide" style="display:none">
+    <div class="end-heart">💖</div>
+    <h1>Terima Kasih</h1>
+    <p id="endText"></p>
+</div>
+
+</div>
+
+<script>
+const nama=document.getElementById("nama");
+const tgl=document.getElementById("tgl");
+const btn=document.getElementById("btn");
+
+const opening=document.getElementById("opening");
+const choice=document.getElementById("choice");
+const gabungan=document.getElementById("gabungan");
+const surprise=document.getElementById("surprise");
+const ending=document.getElementById("ending");
+
+const judul=document.getElementById("judul");
+const info=document.getElementById("info");
+const pGab=document.getElementById("pGab");
+const endText=document.getElementById("endText");
+
+const btnGab=document.getElementById("btnGab");
+const btnSurprise=document.getElementById("btnSurprise");
+const btnBack=document.getElementById("btnBack");
+
+const btnTrap=document.getElementById("btnTrap");
+const btnReal=document.getElementById("btnReal");
+const typing=document.getElementById("typing");
+
+let typingTimer, progress=0;
+
+function hitung(t){
+    const d=new Date(t),n=new Date();
+    let u=n.getFullYear()-d.getFullYear();
+    if(n<new Date(n.getFullYear(),d.getMonth(),d.getDate()))u--;
+    return u;
+}
+
+nama.oninput=()=>btn.disabled=!nama.value||!tgl.value;
+tgl.onchange=()=>btn.disabled=!nama.value||!tgl.value;
+
+btn.onclick=()=>{
+    opening.style.display="none";
+    choice.style.display="block";
+    judul.textContent="Hai "+nama.value+" ✨";
+    info.textContent="Hari ini kamu "+hitung(tgl.value)+" tahun";
+    pGab.textContent="Semoga kamu selalu dikelilingi hal-hal baik dan orang yang tulus 🤍";
+};
+
+btnGab.onclick=()=>{
+    choice.style.display="none";
+    gabungan.style.display="block";
+    btnSurprise.disabled=false;
+};
+
+btnBack.onclick=()=>{
+    gabungan.style.display="none";
+    choice.style.display="block";
+};
+
+btnSurprise.onclick=()=>{
+    choice.style.display="none";
+    surprise.style.display="block";
+    initSurprise();
+};
+
+function typeText(text){
+    typing.textContent="";
+    clearInterval(typingTimer);
+    let i=0;
+    typingTimer=setInterval(()=>{
+        typing.textContent+=text[i++];
+        if(i>=text.length)clearInterval(typingTimer);
+    },65);
+}
+
+function react(btn){
+    btn.classList.add("react");
+    setTimeout(()=>btn.classList.remove("react"),300);
+}
+
+function initSurprise(){
+    progress=0;
+    typing.textContent="";
+
+    btnTrap.onclick=()=>{
+        react(btnTrap);
+        typeText("Kadang pilihan yang kelihatan yakin… belum tentu yang tepat 🙂");
+    };
+
+    btnReal.onclick=()=>{
+        react(btnReal);
+        progress++;
+
+        if(progress<3){
+            typeText("Hmm… coba rasakan lagi ✨");
+        }else{
+            typeText("Iya 💖 ini pilihan yang tepat");
+            setTimeout(()=>{
+                surprise.style.display="none";
+                ending.style.display="block";
+                endText.textContent="Terima kasih sudah ada. Semoga bahagiamu selalu menemukan jalan pulang 🤍";
+            },2800);
+        }
+    };
+}
+</script>
+
+</body>
+</html>

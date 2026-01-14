@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Birthday Surprise 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap');
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Poppins,sans-serif;
+  background:url('https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&w=1080&q=80')
+  no-repeat center/cover fixed;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.card{
+  width:92%;
+  max-width:380px;
+  background:rgba(0,0,0,.6);
+  padding:26px;
+  border-radius:26px;
+  text-align:center;
+  color:#fff;
+  backdrop-filter:blur(6px);
+}
+
+.slide{animation:fade .5s ease}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1}}
+
+h1{font-family:Pacifico;color:#ffb3d9}
+p{font-size:14px;line-height:1.6}
+
+.input{
+  width:100%;
+  padding:12px;
+  margin:6px 0;
+  border-radius:14px;
+  border:1px solid #ffb3d9;
+  background:rgba(255,255,255,.1);
+  color:#fff;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:30px;
+  margin-top:12px;
+  background:linear-gradient(135deg,#ff5e78,#ff85a2);
+  color:#fff;
+  cursor:pointer;
+}
+
+.heart{
+  font-size:38px;
+  animation:beat 1s infinite;
+}
+@keyframes beat{50%{transform:scale(1.25)}}
+
+#typing{
+  min-height:70px;
+  margin-top:14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<!-- OPEN -->
+<div id="opening" class="slide">
+  <h1>Hai 💖</h1>
+  <input id="nama" class="input" placeholder="Nama">
+  <input id="tgl" type="date" class="input">
+  <button id="btn" disabled>🔒 Lanjut</button>
+</div>
+
+<!-- CHOICE -->
+<div id="choice" class="slide" style="display:none">
+  <h1 id="judul"></h1>
+  <p id="info"></p>
+  <button id="btnGab">💖 Pesan Spesial</button>
+  <button id="btnSurprise" disabled>🎁 Surprise</button>
+</div>
+
+<!-- MESSAGE -->
+<div id="gabungan" class="slide" style="display:none">
+  <p id="pGab"></p>
+  <button id="btnBack">⬅ Kembali</button>
+</div>
+
+<!-- SURPRISE -->
+<div id="surprise" class="slide" style="display:none">
+  <div class="heart">❤</div>
+  <p id="typing"></p>
+  <button id="btnNext" style="display:none">Klik lagi 💖</button>
+</div>
+
+<!-- END -->
+<div id="ending" class="slide" style="display:none">
+  <h1>Terima Kasih 🤍</h1>
+  <p>Semoga hari ini dan hari-hari berikutnya selalu hangat ✨</p>
+</div>
+
+</div>
+
+<script>
+const nama=document.getElementById("nama");
+const tgl=document.getElementById("tgl");
+const btn=document.getElementById("btn");
+const opening=document.getElementById("opening");
+const choice=document.getElementById("choice");
+const gabungan=document.getElementById("gabungan");
+const surprise=document.getElementById("surprise");
+const ending=document.getElementById("ending");
+const judul=document.getElementById("judul");
+const info=document.getElementById("info");
+const pGab=document.getElementById("pGab");
+const btnGab=document.getElementById("btnGab");
+const btnSurprise=document.getElementById("btnSurprise");
+const btnBack=document.getElementById("btnBack");
+const typing=document.getElementById("typing");
+const btnNext=document.getElementById("btnNext");
+
+/* HITUNG UMUR */
+function hitungUmur(tglLahir){
+  const lahir = new Date(tglLahir);
+  const sekarang = new Date();
+  let umur = sekarang.getFullYear() - lahir.getFullYear();
+  const cek = new Date(sekarang.getFullYear(), lahir.getMonth(), lahir.getDate());
+  if(sekarang < cek) umur--;
+  return umur;
+}
+
+nama.oninput=()=>btn.disabled=!nama.value||!tgl.value;
+tgl.onchange=()=>btn.disabled=!nama.value||!tgl.value;
+
+btn.onclick=()=>{
+  opening.style.display="none";
+  choice.style.display="block";
+
+  const umur = hitungUmur(tgl.value);
+  judul.textContent = "Hai " + nama.value + " 💕";
+  info.textContent = "Hari ini kamu " + umur + " tahun 🎂";
+};
+
+btnGab.onclick=()=>{
+  choice.style.display="none";
+  gabungan.style.display="block";
+  pGab.textContent="Semoga semua hal baik selalu menghampiri kamu 💖";
+  btnSurprise.disabled=false;
+};
+
+btnBack.onclick=()=>{
+  gabungan.style.display="none";
+  choice.style.display="block";
+};
+
+btnSurprise.onclick=()=>{
+  choice.style.display="none";
+  surprise.style.display="block";
+  showText();
+};
+
+/* SURPRISE FLOW */
+const texts=[
+  "Ada hal kecil dari kamu yang bikin aku senyum sendiri.",
+  "Mungkin caramu cerita, atau caramu peduli tanpa sadar.",
+  "Di umur yang bertambah ini, semoga kamu makin kuat, bersemagat dan jangan pernah menyerah dalam menjalani hal yg sulit.",
+  "Semoga langkahmu selalu ditemani hal-hal baik yaa :).",
+  "Terima kasih ya… sudah jadi kamu, itu saja yang bisa aku ucapkan selamat ulang tahun >-< ."
+];
+
+let idx=0,typingRun=false;
+
+function typeText(text,cb){
+  typing.textContent="";
+  typingRun=true;
+  let i=0;
+  const t=setInterval(()=>{
+    typing.textContent+=text[i++];
+    if(i>=text.length){
+      clearInterval(t);
+      typingRun=false;
+      if(cb)cb();
+    }
+  },55);
+}
+
+function showText(){
+  btnNext.style.display="none";
+  typeText(texts[idx],()=>{
+    btnNext.style.display="block";
+  });
+}
+
+btnNext.onclick=()=>{
+  if(typingRun)return;
+  idx++;
+  if(idx<texts.length){
+    showText();
+  }else{
+    surprise.style.display="none";
+    ending.style.display="block";
+  }
+};
+</script>
+
+</body>
+</html>

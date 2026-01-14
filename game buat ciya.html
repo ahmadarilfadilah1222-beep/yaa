@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>🌙 Untuk Ciya</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(180deg, #1a1a2e, #16213e);
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    overflow: hidden;
+}
+
+.container {
+    text-align: center;
+    max-width: 420px;
+    padding: 20px;
+}
+
+h1 {
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+
+#star {
+    font-size: 70px;
+    cursor: pointer;
+    margin: 20px 0;
+    animation: glow 1.5s infinite alternate;
+}
+
+@keyframes glow {
+    from { transform: scale(1); opacity: 0.7; }
+    to { transform: scale(1.2); opacity: 1; }
+}
+
+#text {
+    min-height: 90px;
+    font-size: 18px;
+    line-height: 1.6;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+#final {
+    display: none;
+    margin-top: 25px;
+}
+
+button {
+    padding: 10px 22px;
+    border-radius: 25px;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    margin: 6px;
+}
+
+.yes {
+    background: #e94560;
+    color: white;
+}
+
+.no {
+    background: rgba(255,255,255,0.6);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🌙 Hai Ciya</h1>
+    <p>Klik bintangnya ya… pelan aja ✨</p>
+
+    <div id="star">✨</div>
+
+    <div id="text"></div>
+
+    <div id="final">
+        <p style="font-size:18px">
+            Ciya…<br>
+            kalau suatu hari kamu pengen ada yang dengerin,<br>
+            boleh nggak aku?
+        </p>
+        <button class="yes" onclick="iya()">Boleh 🌷</button>
+        <button class="no" onclick="pelan()">Pelan-pelan aja 🌙</button>
+    </div>
+</div>
+
+<script>
+const kalimat = [
+    "Kadang aku mikir… kenapa nama Ciya sering muncul di kepala.",
+    "Bukan karena apa-apa, cuma rasanya tenang aja.",
+    "Aku nggak pengen buru-buru, nggak pengen maksa.",
+    "Aku cuma pengen hadir… kalau kamu butuh.",
+    "Dan kalau boleh jujur, aku pengen kenal Ciya lebih dari sekadar nama."
+];
+
+let i = 0;
+const star = document.getElementById("star");
+const text = document.getElementById("text");
+const final = document.getElementById("final");
+
+star.onclick = () => {
+    text.style.opacity = 1;
+    text.textContent = kalimat[i];
+    i++;
+
+    if (i === kalimat.length) {
+        star.style.display = "none";
+        final.style.display = "block";
+    }
+};
+
+function iya() {
+    document.body.innerHTML = `
+        <div style="text-align:center;color:white;padding:30px">
+            <h1>🌷 Makasih, Ciya</h1>
+            <p>
+            Aku nggak janji sempurna,<br>
+            tapi aku janji tulus.
+            </p>
+        </div>
+    `;
+}
+
+function pelan() {
+    alert("Aku ngerti 😊 pelan juga nggak apa-apa");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Birthday Surprise 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap');
+
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    min-height:100vh;
+    font-family:Poppins,sans-serif;
+    background:url('https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&w=1080&q=80')
+    no-repeat center/cover fixed;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+}
+
+.card{
+    width:92%;
+    max-width:380px;
+    background:rgba(0,0,0,.6);
+    padding:26px;
+    border-radius:26px;
+    text-align:center;
+    color:#fff;
+    backdrop-filter:blur(6px);
+    box-shadow:0 20px 40px rgba(255,255,255,.25);
+}
+
+.slide{animation:fade .5s ease}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1}}
+
+h1{font-family:Pacifico;color:#ffb3d9}
+p{font-size:14px;line-height:1.6}
+
+.input{
+    width:100%;
+    padding:12px;
+    margin:6px 0;
+    border-radius:14px;
+    border:1px solid #ffb3d9;
+    background:rgba(255,255,255,.1);
+    color:#fff;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:30px;
+    margin-top:10px;
+    background:linear-gradient(135deg,#ff5e78,#ff85a2);
+    color:#fff;
+    cursor:pointer;
+}
+
+button:disabled{background:#ffb3d9;cursor:not-allowed}
+
+.heart{font-size:34px;animation:beat 1s infinite}
+@keyframes beat{50%{transform:scale(1.25)}}
+
+/* SURPRISE */
+.choice-wrap{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-top:10px;
+}
+
+.choice-button{
+    transition:transform .35s ease;
+}
+
+.choice-button.move{
+    transform:translateX(36px);
+}
+
+#typing{
+    margin-top:16px;
+    min-height:38px;
+}
+
+/* CONFETTI */
+.floating{
+    position:fixed;
+    top:-10px;
+    font-size:18px;
+    animation:fall linear forwards;
+}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+</style>
+</head>
+
+<body>
+
+<audio id="bgm" loop>
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9c3a2b1b2b.mp3">
+</audio>
+
+<div class="card">
+
+<!-- OPEN -->
+<div id="opening" class="slide">
+    <h1>Hai 💖</h1>
+    <input id="nama" class="input" placeholder="Nama">
+    <input id="tgl" type="date" class="input">
+    <button id="btn" disabled>🔒 Lanjut</button>
+</div>
+
+<!-- CHOICE -->
+<div id="choice" class="slide" style="display:none">
+    <h1 id="judul"></h1>
+    <p id="info"></p>
+    <button id="btnGab">💖 Pesan Spesial</button>
+    <button id="btnSurprise" disabled>🎁 Surprise 🔒</button>
+</div>
+
+<!-- MESSAGE -->
+<div id="gabungan" class="slide" style="display:none">
+    <p id="pGab"></p>
+    <button id="btnBack">⬅ Kembali</button>
+</div>
+
+<!-- SURPRISE -->
+<div id="surprise" class="slide" style="display:none">
+    <h1 class="heart">❤</h1>
+    <p>Pilih salah satu:</p>
+
+    <div class="choice-wrap">
+        <button id="btnTrap" class="choice-button">Pilihan 1</button>
+        <button id="btnReal" class="choice-button">Pilihan 2</button>
+    </div>
+
+    <p id="typing"></p>
+</div>
+
+<!-- END -->
+<div id="ending" class="slide" style="display:none">
+    <h1>Terima Kasih 🤍</h1>
+    <p>Semoga harimu selalu hangat ✨</p>
+</div>
+
+</div>
+
+<script>
+const nama=document.getElementById("nama");
+const tgl=document.getElementById("tgl");
+const btn=document.getElementById("btn");
+
+const opening=document.getElementById("opening");
+const choice=document.getElementById("choice");
+const gabungan=document.getElementById("gabungan");
+const surprise=document.getElementById("surprise");
+const ending=document.getElementById("ending");
+
+const judul=document.getElementById("judul");
+const info=document.getElementById("info");
+const pGab=document.getElementById("pGab");
+
+const btnGab=document.getElementById("btnGab");
+const btnSurprise=document.getElementById("btnSurprise");
+const btnBack=document.getElementById("btnBack");
+
+const btnTrap=document.getElementById("btnTrap");
+const btnReal=document.getElementById("btnReal");
+const typing=document.getElementById("typing");
+
+let typingTimer, moveCount=0, unlocked=false;
+
+function hitung(t){
+    const d=new Date(t),n=new Date();
+    let u=n.getFullYear()-d.getFullYear();
+    if(n<new Date(n.getFullYear(),d.getMonth(),d.getDate()))u--;
+    return u;
+}
+
+nama.oninput=()=>btn.disabled=!nama.value||!tgl.value;
+tgl.onchange=()=>btn.disabled=!nama.value||!tgl.value;
+
+btn.onclick=()=>{
+    opening.style.display="none";
+    choice.style.display="block";
+    judul.textContent="Hai "+nama.value+" 💕";
+    info.textContent="Hari ini kamu "+hitung(tgl.value)+" tahun 🎂";
+    pGab.textContent="Semoga semua doa baikmu pelan-pelan jadi nyata 💖";
+};
+
+btnGab.onclick=()=>{
+    choice.style.display="none";
+    gabungan.style.display="block";
+    btnSurprise.disabled=false;
+    btnSurprise.textContent="🎁 Surprise";
+};
+
+btnBack.onclick=()=>{
+    gabungan.style.display="none";
+    choice.style.display="block";
+};
+
+btnSurprise.onclick=()=>{
+    choice.style.display="none";
+    surprise.style.display="block";
+    document.getElementById("bgm").play().catch(()=>{});
+    initSurprise();
+};
+
+function typeText(text){
+    typing.textContent="";
+    clearInterval(typingTimer);
+    let i=0;
+    typingTimer=setInterval(()=>{
+        typing.textContent+=text[i++];
+        if(i>=text.length)clearInterval(typingTimer);
+    },60);
+}
+
+function initSurprise(){
+    moveCount=0;
+    unlocked=false;
+    btnTrap.classList.remove("move");
+    btnReal.classList.remove("move");
+    typing.textContent="";
+
+    btnTrap.onclick=()=>{
+        typeText("Hehe 😆 ini cuma jebakan kecil");
+        btnTrap.classList.add("move");
+        setTimeout(()=>btnTrap.classList.remove("move"),300);
+    };
+
+    btnReal.onclick=()=>{
+        if(!unlocked){
+            btnReal.classList.add("move");
+            setTimeout(()=>btnReal.classList.remove("move"),300);
+            if(++moveCount>=3){
+                unlocked=true;
+                typeText("Oke 😄 sekarang kamu boleh klik aku");
+            }
+        }else{
+            typeText("Yay! Kamu berhasil 💖");
+            confetti();
+            setTimeout(()=>{
+                surprise.style.display="none";
+                ending.style.display="block";
+            },3000);
+        }
+    };
+}
+
+function confetti(){
+    for(let i=0;i<25;i++){
+        const f=document.createElement("div");
+        f.className="floating";
+        f.textContent="💖";
+        f.style.left=Math.random()*100+"vw";
+        f.style.animationDuration=4+Math.random()*3+"s";
+        document.body.appendChild(f);
+        setTimeout(()=>f.remove(),7000);
+    }
+}
+</script>
+
+</body>
+</html>
