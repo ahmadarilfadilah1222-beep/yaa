@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Birthday Surprise 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap">
+<style>
+:root{
+  --ink:#fff; --pink:#ffb3d9; --rose:#ff5e78; --rose2:#ff85a2;
+  --sky1:#1a1040; --sky2:#3b1d63; --sky3:#7a2a74;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;min-height:100vh;color:var(--ink);
+  font-family:Poppins,system-ui,sans-serif;
+  background-color:#1a1040;
+  background-image:
+    radial-gradient(2px 2px at 20% 30%,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 70% 20%,#fff,transparent),
+    radial-gradient(2px 2px at 85% 65%,#ffd6ec,transparent),
+    radial-gradient(1.5px 1.5px at 35% 80%,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 55% 50%,#ffd6ec,transparent),
+    linear-gradient(160deg,var(--sky1),var(--sky2) 60%,var(--sky3));
+  background-attachment:fixed;
+  display:flex;justify-content:center;align-items:center;
+  overflow-x:hidden;
+}
+/* Stiker bergerak */
+#stickers{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.st{
+  position:absolute;font-size:34px;pointer-events:auto;cursor:pointer;
+  user-select:none;-webkit-user-select:none;
+  animation:float var(--d,7s) ease-in-out var(--l,0s) infinite alternate;
+  filter:drop-shadow(0 4px 6px rgba(0,0,0,.35));
+}
+@keyframes float{
+  0%{transform:translate(0,0) rotate(-8deg)}
+  50%{transform:translate(var(--x,14px),-26px) rotate(8deg)}
+  100%{transform:translate(calc(var(--x,14px)*-1),-8px) rotate(-5deg)}
+}
+.st.pop{animation:pop .7s ease}
+@keyframes pop{
+  0%{transform:scale(1)}30%{transform:scale(1.8) rotate(-20deg)}
+  60%{transform:scale(.8) rotate(20deg)}100%{transform:scale(1)}
+}
+.card{
+  position:relative;z-index:2;width:92%;max-width:380px;margin:24px 0;
+  background:rgba(20,8,40,.62);padding:28px 24px;border-radius:26px;
+  text-align:center;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(255,179,217,.25);box-shadow:0 12px 40px rgba(0,0,0,.4);
+}
+.slide{animation:fade .5s ease}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+h1{font-family:Pacifico,cursive;font-weight:400;color:var(--pink);margin:0 0 10px;font-size:30px}
+p{font-size:14.5px;line-height:1.7;margin:8px 0}
+.input{
+  width:100%;padding:12px 14px;margin:6px 0;border-radius:14px;
+  border:1px solid var(--pink);background:rgba(255,255,255,.1);color:#fff;
+  font:inherit;color-scheme:dark;
+}
+.input::placeholder{color:rgba(255,255,255,.6)}
+label{display:block;text-align:left;font-size:12px;margin-top:8px;color:var(--pink)}
+button{
+  width:100%;padding:13px;border:none;border-radius:30px;margin-top:12px;
+  background:linear-gradient(135deg,var(--rose),var(--rose2));color:#fff;
+  font:600 14px Poppins,sans-serif;cursor:pointer;transition:transform .15s,opacity .2s;
+}
+button:active{transform:scale(.97)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.ghost{background:transparent;border:1px solid var(--pink);color:var(--pink)}
+button:focus-visible,.input:focus-visible,.st:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.cake{font-size:64px;display:inline-block;animation:bob 2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px) rotate(4deg)}}
+.heart{font-size:42px;animation:beat 1s infinite}
+@keyframes beat{50%{transform:scale(1.25)}}
+#typing{min-height:120px;margin-top:10px;font-size:15px}
+#music{
+  position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);right:12px;z-index:5;
+  width:44px;height:44px;padding:0;margin:0;border-radius:50%;font-size:20px;
+  background:rgba(20,8,40,.7);border:1px solid var(--pink);display:none;
+}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:4}
+#gHead{display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-bottom:8px}
+#arena{position:relative;width:100%;aspect-ratio:320/380;border-radius:18px;overflow:hidden;background:rgba(0,0,0,.3);border:1px solid rgba(255,179,217,.3);touch-action:none}
+#gc{width:100%;height:100%;display:none;touch-action:none}
+#box,#ov{position:absolute;inset:0}
+#box{display:none;padding:10px}
+#ov{display:none;align-items:center;justify-content:center;background:rgba(20,8,40,.9);padding:18px;z-index:2}
+#ov h1{font-size:26px}
+.mem{grid-template-columns:repeat(4,1fr);gap:8px;align-content:center}
+.sim{grid-template-columns:1fr 1fr;gap:12px}
+.cardm{margin:0;padding:0;aspect-ratio:1;font-size:28px;border-radius:12px;background:rgba(255,255,255,.14);border:1px solid var(--pink)}
+.cardm.ok{background:rgba(155,231,122,.35)}
+.sk{margin:0;border-radius:18px;opacity:.5;height:100%}
+.sk.lit{opacity:1;transform:scale(.95);box-shadow:0 0 22px #fff}
+.bal{position:absolute;width:50px;height:50px;margin:0;padding:0;font-size:34px;background:none;border-radius:50%;animation:pop .35s ease}
+@media (prefers-reduced-motion:reduce){
+  .st,.cake,.heart{animation:none}.slide{animation:none}
+}
+</style>
+</head>
+<body>
+
+<div id="stickers" aria-hidden="true"></div>
+<canvas id="confetti"></canvas>
+<button id="music" aria-label="Putar atau jeda lagu">🔊</button>
+
+<main class="card">
+
+  <section id="opening" class="slide">
+    <div class="cake">🎂</div>
+    <h1>Hai, ada kejutan!</h1>
+    <p>Isi dulu ya, biar kejutannya pas untukmu.</p>
+    <label for="nama">Namamu</label>
+    <input id="nama" class="input" placeholder="Tulis namamu" autocomplete="off">
+    <label for="tgl">Tanggal lahirmu</label>
+    <input id="tgl" type="date" class="input">
+    <button id="btn" disabled>🎁 Buka kejutan</button>
+  </section>
+
+  <section id="choice" class="slide" style="display:none">
+    <h1 id="judul"></h1>
+    <p id="info"></p>
+    <button id="btnGab" class="ghost">💌 Pesan spesial</button>
+    <button id="btnGame">🎮 Main game (5 level)</button>
+    <button id="btnSurprise" disabled>🔒 Hadiah (selesaikan 5 level)</button>
+  </section>
+
+  <section id="game" class="slide" style="display:none">
+    <div id="gHead"><b id="gLvl">Level 1/5</b><span id="gStat"></span></div>
+    <div id="arena">
+      <canvas id="gc" width="320" height="380"></canvas>
+      <div id="box"></div>
+      <div id="ov"></div>
+    </div>
+    <button id="gExit" class="ghost">⬅ Keluar</button>
+  </section>
+
+  <section id="gabungan" class="slide" style="display:none">
+    <div class="cake">💌</div>
+    <p id="pGab"></p>
+    <button id="btnBack">⬅ Kembali</button>
+  </section>
+
+  <section id="surprise" class="slide" style="display:none">
+    <div class="heart">❤</div>
+    <p id="typing" aria-live="polite"></p>
+    <button id="btnSkip" class="ghost">Tampilkan semua teks</button>
+    <button id="btnNext" style="display:none">Lanjut 💖</button>
+  </section>
+
+  <section id="ending" class="slide" style="display:none">
+    <div class="cake">🎉</div>
+    <h1 id="endTitle">Selamat ulang tahun!</h1>
+    <p id="endText"></p>
+    <p style="font-size:13px;opacity:.85">Tap stikernya, mereka suka diajak main 🧸</p>
+    <button id="btnConfetti">🎊 Hujan konfeti lagi</button>
+    <button id="btnReplay" class="ghost">↺ Ulangi dari awal</button>
+  </section>
+
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const nama=$("nama"),tgl=$("tgl"),btn=$("btn"),judul=$("judul"),info=$("info"),
+  pGab=$("pGab"),btnSurprise=$("btnSurprise"),typing=$("typing"),
+  btnNext=$("btnNext"),btnSkip=$("btnSkip"),musicBtn=$("music");
+const screens=["opening","choice","game","gabungan","surprise","ending"];
+function show(id){screens.forEach(s=>$(s).style.display=s===id?"block":"none")}
+
+/* ===== Stiker bergerak ===== */
+const emojis=["🎈","🧸","🐱","🦋","🎁","⭐","🌸","🐰","🍰","💫"];
+const layer=$("stickers");
+emojis.forEach((e,i)=>{
+  const s=document.createElement("span");
+  s.className="st";s.textContent=e;
+  s.style.left=(6+(i*9.3)%88)+"%";
+  s.style.top=(8+((i*37)%78))+"%";
+  s.style.setProperty("--d",(5+(i%5)*1.3)+"s");
+  s.style.setProperty("--l",(-i*.8)+"s");
+  s.style.setProperty("--x",(10+(i%4)*8)+"px");
+  s.addEventListener("click",()=>{
+    s.classList.remove("pop");void s.offsetWidth;s.classList.add("pop");
+  });
+  layer.appendChild(s);
+});
+
+/* ===== Umur ===== */
+function hitungUmur(t){
+  const l=new Date(t),n=new Date();
+  let u=n.getFullYear()-l.getFullYear();
+  if(n<new Date(n.getFullYear(),l.getMonth(),l.getDate()))u--;
+  return u;
+}
+const cek=()=>btn.disabled=!nama.value.trim()||!tgl.value;
+nama.oninput=cek;tgl.onchange=cek;
+
+/* ===== Lagu Happy Birthday (disintesis WebAudio) ===== */
+const N={C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392,A4:440,Bb4:466.16,C5:523.25};
+const song=[
+["C4",.75],["C4",.25],["D4",1],["C4",1],["F4",1],["E4",2],
+["C4",.75],["C4",.25],["D4",1],["C4",1],["G4",1],["F4",2],
+["C4",.75],["C4",.25],["C5",1],["A4",1],["F4",1],["E4",1],["D4",1],
+["Bb4",.75],["Bb4",.25],["A4",1],["F4",1],["G4",1],["F4",2]
+];
+let ctx=null,playing=false,loopTimer=null;
+function playOnce(){
+  const beat=.46;let t=ctx.currentTime+.05;
+  song.forEach(([n,b])=>{
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type="triangle";o.frequency.value=N[n];
+    const d=b*beat;
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(.22,t+.02);
+    g.gain.exponentialRampToValueAtTime(.001,t+d*.95);
+    o.connect(g).connect(ctx.destination);
+    o.start(t);o.stop(t+d);t+=d;
+  });
+  return (t-ctx.currentTime)*1000+900;
+}
+function loop(){
+  if(!playing)return;
+  const ms=playOnce();
+  loopTimer=setTimeout(loop,ms);
+}
+function startMusic(){
+  try{
+    if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();
+    if(ctx.state==="suspended")ctx.resume();
+    if(playing)return;
+    playing=true;musicBtn.textContent="🔊";loop();
+  }catch(e){}
+}
+function stopMusic(){
+  playing=false;clearTimeout(loopTimer);musicBtn.textContent="🔇";
+  if(ctx)ctx.suspend();
+}
+musicBtn.onclick=()=>playing?stopMusic():startMusic();
+
+/* ===== Alur ===== */
+btn.onclick=()=>{
+  const n=nama.value.trim(),u=hitungUmur(tgl.value);
+  show("choice");musicBtn.style.display="block";startMusic();
+  judul.textContent="Hai, "+n+" 💕";
+  info.textContent=(isNaN(u)||u<0)
+    ?"Hari ini hari spesialmu, dan ada sesuatu yang kusiapkan untukmu 🎂 Selesaikan 5 level game untuk membuka hadiahnya 🎮"
+    :"Usiamu sekarang "+u+" tahun 🎂 Ada pesan dan kejutan kecil yang kusiapkan untukmu. Selesaikan 5 level game dulu untuk membuka hadiahnya 🎮";
+};
+$("btnGab").onclick=()=>{
+  show("gabungan");
+  pGab.textContent="Semoga semua hal baik menghampirimu hari ini, besok, dan seterusnya. Kamu pantas dapat banyak bahagia 💖";
+  
+};
+$("btnBack").onclick=()=>show("choice");
+
+const texts=[
+  "Ada hal-hal kecil dari kamu yang membuatku senyum sendiri.",
+  "Mungkin caramu bercerita, atau caramu peduli tanpa kamu sadari.",
+  "Di usia yang bertambah ini, semoga kamu makin kuat, makin semangat, dan tidak menyerah saat harinya terasa berat.",
+  "Semoga langkahmu selalu ditemani hal-hal baik, dan orang-orang yang tulus 🌷",
+  "Terima kasih sudah menjadi kamu. Itu saja yang ingin kuucapkan: selamat ulang tahun! 🎂"
+];
+let idx=0,typingRun=false,timer=null;
+function typeText(text,cb){
+  clearInterval(timer);typing.textContent="";typingRun=true;let i=0;
+  timer=setInterval(()=>{
+    typing.textContent+=text[i++];
+    if(i>=text.length){clearInterval(timer);typingRun=false;cb&&cb()}
+  },45);
+}
+function showText(){
+  btnNext.style.display="none";btnSkip.style.display="block";
+  typeText(texts[idx],()=>{
+    btnSkip.style.display="none";
+    btnNext.style.display="block";
+    btnNext.textContent=idx===texts.length-1?"Terakhir 🎁":"Lanjut 💖";
+  });
+}
+btnSurprise.onclick=()=>{idx=0;show("surprise");showText()};
+btnSkip.onclick=()=>{
+  if(!typingRun)return;
+  clearInterval(timer);typing.textContent=texts[idx];typingRun=false;
+  btnSkip.style.display="none";btnNext.style.display="block";
+};
+btnNext.onclick=()=>{
+  if(typingRun)return;
+  idx++;
+  if(idx<texts.length)showText();
+  else{
+    show("ending");
+    $("endTitle").textContent="Selamat ulang tahun, "+nama.value.trim()+"!";
+    $("endText").textContent="Semoga hari ini dan hari-hari berikutnya selalu hangat ✨";
+    confetti();
+  }
+};
+$("btnConfetti").onclick=confetti;
+$("btnReplay").onclick=()=>{idx=0;show("opening")};
+
+/* ===== GAME 5 LEVEL ===== */
+const gc=$("gc"),gx=gc.getContext("2d"),box=$("box"),ov=$("ov"),gLvl=$("gLvl"),gStat=$("gStat"),btnGame=$("btnGame");
+const LV=[
+ {t:"Tangkap Hati",d:"Geser keranjang 🧺 untuk menangkap 14 hati ❤. Hindari bom 💣 (nyawa cuma 3) dan jangan biarkan 5 hati terlewat. Makin lama makin cepat!"},
+ {t:"Pasangan Kenangan",d:"Cocokkan 8 pasang kartu dengan maksimal 20 langkah. Ingat posisinya baik-baik!"},
+ {t:"Pecahkan Balon",d:"Tap 20 balon 🎈 dalam 22 detik. Balon bom 💣 mengurangi waktu 4 detik, dan balon cepat menghilang!"},
+ {t:"Ingat Urutannya",d:"Perhatikan urutan warna yang menyala, lalu ulangi. Selesaikan 7 ronde tanpa salah sekali pun."},
+ {t:"Hindari Meteor",d:"Geser bintang ⭐ untuk menghindari meteor ☄️ selama 25 detik. Nyawa 3, dan bintangmu bergerak terbatas kecepatannya."}
+];
+let cur=0,gameDone=false,stop=null;
+function stopG(){if(stop){stop();stop=null}}
+function ovShow(h,p,label,fn){
+  ov.style.display="flex";
+  ov.innerHTML="<div><h1></h1><p></p></div>";
+  ov.querySelector("h1").textContent=h;ov.querySelector("p").textContent=p;
+  const b=document.createElement("button");b.textContent=label;
+  b.onclick=()=>{ov.style.display="none";fn()};
+  ov.firstChild.appendChild(b);
+}
+function intro(){
+  stopG();gLvl.textContent="Level "+(cur+1)+"/5";gStat.textContent="";
+  gc.style.display="none";box.style.display="none";
+  ovShow((cur+1)+". "+LV[cur].t,LV[cur].d,"Mulai ▶",run);
+}
+function run(){stopG();[()=>canvasGame(1),memory,balloons,simon,()=>canvasGame(5)][cur]()}
+function fail(m){stopG();ovShow("Yah, belum berhasil 😢",m+" Coba lagi ya, kamu pasti bisa!","Ulangi level",run)}
+function win(){
+  stopG();
+  if(cur<4){
+    ovShow("Level selesai! 🎉","Level "+(cur+1)+" beres. Lanjut yuk!","Level berikutnya ▶",()=>{cur++;intro()});
+  }else{
+    gameDone=true;btnSurprise.disabled=false;
+    btnSurprise.textContent="🎁 Buka Hadiah";btnGame.textContent="🎮 Main lagi";
+    confetti();
+    ovShow("Semua level beres! 🏆","Hebat banget! Hadiahmu sudah terbuka.","Ke hadiah 🎁",()=>show("choice"));
+  }
+}
+btnGame.onclick=()=>{if(gameDone)cur=0;show("game");intro()};
+$("gExit").onclick=()=>{stopG();ov.style.display="none";show("choice")};
+
+function beep(f){
+  if(!ctx||ctx.state!=="running")return;
+  const o=ctx.createOscillator(),g=ctx.createGain();
+  o.frequency.value=f;g.gain.value=.12;o.connect(g).connect(ctx.destination);
+  o.start();o.stop(ctx.currentTime+.18);
+}
+
+/* Level 1 & 5: game kanvas */
+function canvasGame(mode){
+  box.style.display="none";gc.style.display="block";
+  const W=gc.width,H=gc.height;
+  let px=W/2,tx=W/2,lives=3,score=0,miss=0,items=[],t0=performance.now(),last=t0,sp=0,alive=true,raf;
+  const cl=v=>Math.max(26,Math.min(W-26,v));
+  const mv=e=>{const r=gc.getBoundingClientRect();tx=cl((e.clientX-r.left)*W/r.width)};
+  gc.onpointermove=mv;gc.onpointerdown=mv;
+  const kd=e=>{if(e.key==="ArrowLeft")tx=cl(tx-30);if(e.key==="ArrowRight")tx=cl(tx+30)};
+  addEventListener("keydown",kd);
+  const hud=()=>gStat.textContent=mode===1
+    ?"🧺 "+score+"/14 · ❤×"+lives+" · lewat "+miss+"/5"
+    :"⏱ "+Math.max(0,25-(performance.now()-t0)/1000).toFixed(1)+"s · ❤×"+lives;
+  function frame(now){
+    if(!alive)return;
+    const dt=Math.min(40,now-last);last=now;const el=(now-t0)/1000;
+    if(mode===5){const m=.5*dt;px+=Math.max(-m,Math.min(m,tx-px))}else px=tx;
+    sp-=dt;
+    if(sp<=0){
+      if(mode===1){
+        sp=Math.max(380,800-score*25);
+        items.push({x:20+Math.random()*(W-40),y:-20,bad:Math.random()<.3,v:(.14+score*.01)*(.85+Math.random()*.3)});
+      }else{
+        sp=Math.max(150,380-el*8);
+        items.push({x:Math.random()<.35?cl(px+Math.random()*80-40):20+Math.random()*(W-40),y:-20,bad:true,v:(.2+el*.007)*(.85+Math.random()*.3)});
+      }
+    }
+    gx.clearRect(0,0,W,H);gx.textAlign="center";
+    gx.font="34px serif";gx.fillText(mode===1?"🧺":"⭐",px,H-14);
+    gx.font="28px serif";
+    for(let i=items.length-1;i>=0;i--){
+      const o=items[i];o.y+=o.v*dt;
+      gx.fillText(o.bad?(mode===1?"💣":"☄️"):"❤️",o.x,o.y);
+      if(Math.abs(o.x-px)<(mode===1?32:22)&&o.y>H-52&&o.y<H-10){
+        items.splice(i,1);
+        if(o.bad)lives--;else score++;
+      }else if(o.y>H+24){items.splice(i,1);if(!o.bad)miss++}
+    }
+    hud();
+    if(lives<=0)return fail(mode===1?"Kena bom terlalu sering!":"Meteor menghantam bintangmu!");
+    if(mode===1&&miss>=5)return fail("Terlalu banyak hati yang terlewat!");
+    if(mode===1&&score>=14)return win();
+    if(mode===5&&el>=25)return win();
+    raf=requestAnimationFrame(frame);
+  }
+  raf=requestAnimationFrame(frame);
+  stop=()=>{alive=false;cancelAnimationFrame(raf);removeEventListener("keydown",kd);gc.onpointermove=gc.onpointerdown=null};
+}
+
+/* Level 2: memory */
+function memory(){
+  gc.style.display="none";box.style.display="grid";box.className="mem";box.innerHTML="";
+  const em=["🎂","🧸","🎈","🌸","🐱","🦋","🍰","⭐"];
+  const deck=[...em,...em].sort(()=>Math.random()-.5);
+  let open=[],lock=false,moves=0,found=0,alive=true;
+  const hud=()=>gStat.textContent="Langkah "+moves+"/20 · Pasangan "+found+"/8";
+  hud();
+  deck.forEach(e=>{
+    const b=document.createElement("button");b.className="cardm";b.textContent="❔";
+    b.onclick=()=>{
+      if(!alive||lock||b.dataset.o)return;
+      b.textContent=e;b.dataset.o=1;open.push(b);
+      if(open.length<2)return;
+      moves++;lock=true;const [a,c]=open;
+      if(a.textContent===c.textContent){
+        found++;a.classList.add("ok");c.classList.add("ok");open=[];lock=false;hud();
+        if(found===8)setTimeout(()=>alive&&win(),500);
+        else if(moves>=20)setTimeout(()=>alive&&fail("Langkah habis!"),400);
+      }else{
+        hud();
+        setTimeout(()=>{
+          if(!alive)return;
+          [a,c].forEach(x=>{x.textContent="❔";delete x.dataset.o});
+          open=[];lock=false;
+          if(moves>=20)fail("Langkah habis!");
+        },750);
+      }
+    };
+    box.appendChild(b);
+  });
+  stop=()=>{alive=false};
+}
+
+/* Level 3: balon */
+function balloons(){
+  gc.style.display="none";box.style.display="block";box.className="";box.innerHTML="";
+  let alive=true,score=0,end=performance.now()+22000;
+  const tick=setInterval(()=>{
+    const left=Math.max(0,(end-performance.now())/1000);
+    gStat.textContent="🎈 "+score+"/20 · ⏱ "+left.toFixed(1)+"s";
+    if(left<=0)fail("Waktu habis!");
+  },100);
+  const spawn=setInterval(()=>{
+    const b=document.createElement("button"),bad=Math.random()<.25;
+    b.className="bal";b.textContent=bad?"💣":"🎈";
+    b.style.left=Math.random()*(box.clientWidth-54)+"px";
+    b.style.top=Math.random()*(box.clientHeight-54)+"px";
+    b.onpointerdown=()=>{
+      if(!alive||!b.parentNode)return;
+      b.remove();
+      if(bad){end-=4000;beep(150)}else{score++;beep(660);if(score>=20)win()}
+    };
+    box.appendChild(b);
+    setTimeout(()=>b.remove(),Math.max(650,1100-score*18));
+  },480);
+  stop=()=>{alive=false;clearInterval(tick);clearInterval(spawn)};
+}
+
+/* Level 4: urutan warna */
+function simon(){
+  gc.style.display="none";box.style.display="grid";box.className="sim";box.innerHTML="";
+  const cols=["#ff5e78","#ffd166","#5ec8ff","#9be77a"],fr=[262,330,392,523];
+  let seq=[],pos=0,input=false,alive=true;
+  const pads=cols.map((c,i)=>{
+    const b=document.createElement("button");b.className="sk";b.style.background=c;
+    b.setAttribute("aria-label","Warna "+(i+1));
+    b.onclick=()=>{
+      if(!alive||!input)return;
+      flash(i);
+      if(i!==seq[pos]){input=false;return fail("Urutannya salah!")}
+      pos++;
+      if(pos===seq.length){
+        input=false;
+        if(seq.length===7)setTimeout(()=>alive&&win(),500);else setTimeout(next,750);
+      }
+    };
+    box.appendChild(b);return b;
+  });
+  function flash(i){beep(fr[i]);pads[i].classList.add("lit");setTimeout(()=>pads[i].classList.remove("lit"),240)}
+  function next(){
+    if(!alive)return;
+    seq.push(Math.random()*4|0);pos=0;
+    gStat.textContent="Ronde "+seq.length+"/7";
+    const gap=Math.max(300,500-seq.length*25);
+    seq.forEach((s,k)=>setTimeout(()=>alive&&flash(s),600+k*gap));
+    setTimeout(()=>{if(alive)input=true},600+seq.length*gap);
+  }
+  stop=()=>{alive=false};
+  setTimeout(next,300);
+}
+
+/* ===== Konfeti ===== */
+const cv=$("confetti"),cx=cv.getContext("2d");
+function fit(){cv.width=innerWidth;cv.height=innerHeight}
+fit();addEventListener("resize",fit);
+let bits=[],raf=null;
+function confetti(){
+  const cols=["#ff5e78","#ffb3d9","#ffd166","#9be7ff","#c7a6ff","#fff"];
+  for(let i=0;i<110;i++)bits.push({
+    x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.4,
+    w:6+Math.random()*6,h:8+Math.random()*8,r:Math.random()*6,
+    vx:-1+Math.random()*2,vy:2+Math.random()*3,vr:-.15+Math.random()*.3,
+    c:cols[(Math.random()*cols.length)|0]
+  });
+  if(!raf)draw();
+}
+function draw(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  bits.forEach(b=>{
+    b.x+=b.vx;b.y+=b.vy;b.r+=b.vr;
+    cx.save();cx.translate(b.x,b.y);cx.rotate(b.r);
+    cx.fillStyle=b.c;cx.fillRect(-b.w/2,-b.h/2,b.w,b.h);cx.restore();
+  });
+  bits=bits.filter(b=>b.y<cv.height+30);
+  raf=bits.length?requestAnimationFrame(draw):null;
+  if(!bits.length)cx.clearRect(0,0,cv.width,cv.height);
+}
+</script>
+</body>
+</html>
